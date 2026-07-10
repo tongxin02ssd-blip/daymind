@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  context      UserContext?
+  dailyEntries DailyEntry[]
+}
+
+model UserContext {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  content    String   @default("")
+  isExpanded Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model DailyEntry {
+  id        String       @id @default(cuid())
+  userId    String
+  date      String
+  record    String       @default("")
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plans     DailyPlan[]
+  report    DailyReport?
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model DailyPlan {
+  id        String     @id @default(cuid())
+  entryId   String
+  content   String
+  completed Boolean    @default(false)
+  sortOrder Int        @default(0)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  entry     DailyEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  @@index([entryId, sortOrder])
+}
+
+model DailyReport {
+  id                 String     @id @default(cuid())
+  entryId            String     @unique
+  stateType          String
+  conclusion         String
+  surfaceReason      String
+  deepReason         String
+  suggestion         String
+  backgroundSnapshot String     @default("")
+  aiRawResponse      String
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  entry              DailyEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+}
