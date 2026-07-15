@@ -91,22 +91,45 @@ export function AppPage() {
     }
   }
 
+  const userInitial = user?.email?.charAt(0).toUpperCase() || "D";
+  const selectedDateLabel = new Intl.DateTimeFormat("zh-CN", {
+    month: "long",
+    day: "numeric",
+    weekday: "long"
+  }).format(new Date(`${selectedDate}T00:00:00`));
+
   return (
     <main className="app-shell">
       <header className="topbar">
-        <div>
-          <h1>DayMind</h1>
-          <p>{user?.email}</p>
+        <div className="topbar-brand">
+          <div className="brand-mark brand-mark-small" aria-hidden="true">D</div>
+          <div>
+            <h1>DayMind</h1>
+            <p>记录真实一天，看清自己的状态。</p>
+          </div>
         </div>
-        <Button variant="ghost" onClick={logout}>退出登录</Button>
+        <div className="topbar-account">
+          <div className="user-avatar" aria-hidden="true">{userInitial}</div>
+          <div className="user-meta">
+            <span>我的日记</span>
+            <p>{user?.email}</p>
+          </div>
+          <Button className="logout-button" variant="ghost" onClick={logout}>退出登录</Button>
+        </div>
       </header>
 
       <div className="layout">
         <div className="main-column">
           <BackgroundContextEditor context={context} onSave={updateContext} />
           <DateTabs selectedDate={selectedDate} onSelect={setSelectedDate} />
-          <Card>
-            <div className="current-date">{selectedDate}</div>
+          <Card className="day-card">
+            <div className="current-date">
+              <div>
+                <span className="eyebrow">每日复盘</span>
+                <strong>{selectedDateLabel}</strong>
+              </div>
+              {dateKind === "today" && <span className="today-badge">今天</span>}
+            </div>
 
             {loading || !daily ? (
               <Loading />
@@ -139,7 +162,7 @@ export function AppPage() {
                     <DailyReportCard report={daily.report} />
                     {daily.report?.backgroundSnapshot && (
                       <section className="snapshot">
-                        <h3>生成报告时的背景目标快照</h3>
+                        <h3>生成洞察时的背景快照</h3>
                         <p>{daily.report.backgroundSnapshot}</p>
                       </section>
                     )}
@@ -147,7 +170,7 @@ export function AppPage() {
                 )}
               </>
             )}
-            {error && <div className="error-text">{error}</div>}
+            {error && <div className="error-text page-error" role="alert">{error}</div>}
           </Card>
         </div>
       </div>

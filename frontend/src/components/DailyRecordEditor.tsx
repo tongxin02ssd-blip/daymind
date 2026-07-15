@@ -36,12 +36,14 @@ export function DailyRecordEditor({ value, editable, onSave }: Props) {
     <section className="block">
       <div className="section-header compact">
         <div>
+          <span className="section-kicker">写下此刻</span>
           <h2>今日记录</h2>
         </div>
         {editable && <span className="save-status">{status === "saving" ? "保存中" : status === "saved" ? "已保存" : ""}</span>}
       </div>
       <Textarea
-        rows={8}
+        className="record-textarea"
+        rows={9}
         value={record}
         disabled={!editable}
         onChange={(event) => setRecord(event.target.value)}

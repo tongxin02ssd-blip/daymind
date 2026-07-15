@@ -30,18 +30,21 @@ export function PlanItem({ plan, editable, canToggleComplete, onUpdate, onDelete
   }
 
   return (
-    <div className="plan-item">
+    <div className={plan.completed ? "plan-item completed" : "plan-item"}>
       <label className="plan-check">
         <input
           type="checkbox"
           checked={plan.completed}
           disabled={!canToggleComplete}
+          aria-label={plan.completed ? `将计划标记为未完成：${plan.content}` : `将计划标记为已完成：${plan.content}`}
           onChange={(event) => onUpdate(plan.id, { completed: event.target.checked })}
         />
+        <span aria-hidden="true" />
       </label>
       <Input
         value={content}
         disabled={!editable}
+        aria-label="计划内容"
         onChange={(event) => setContent(event.target.value)}
         onBlur={commit}
         onKeyDown={(event) => {
@@ -49,7 +52,7 @@ export function PlanItem({ plan, editable, canToggleComplete, onUpdate, onDelete
         }}
       />
       {editable && (
-        <Button variant="ghost" onClick={() => onDelete(plan.id)} disabled={saving}>
+        <Button className="plan-delete" variant="ghost" onClick={() => onDelete(plan.id)} disabled={saving} aria-label={`删除计划：${plan.content}`}>
           删除
         </Button>
       )}

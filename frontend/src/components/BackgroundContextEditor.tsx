@@ -32,10 +32,12 @@ export function BackgroundContextEditor({ context, onSave }: Props) {
     <Card className="context-card">
       <div className="section-header">
         <div>
+          <span className="section-kicker">阶段背景</span>
           <h2>近期目标</h2>
+          <p>生成今日洞察时会作为背景参考</p>
         </div>
-        <Button variant="ghost" onClick={() => save({ isExpanded: !isExpanded })}>
-          {isExpanded ? "折叠" : "展开"}
+        <Button className="collapse-button" variant="ghost" onClick={() => save({ isExpanded: !isExpanded })} disabled={saving}>
+          {isExpanded ? "收起" : "展开"}<span aria-hidden="true">{isExpanded ? "↑" : "↓"}</span>
         </Button>
       </div>
       {isExpanded && (
@@ -44,11 +46,11 @@ export function BackgroundContextEditor({ context, onSave }: Props) {
             rows={4}
             value={content}
             onChange={(event) => setContent(event.target.value)}
-            placeholder="例如：7月15日前完成论文引言修改。每天至少复习 1 个前端面试知识点。"
+            placeholder="写下你最近在推进的事情，或此刻最想关注的目标。"
           />
           <div className="right-actions">
-            <Button onClick={() => save({ content })} disabled={saving}>
-              {saving ? "保存中" : "保存"}
+            <Button className="context-save" onClick={() => save({ content })} disabled={saving}>
+              {saving ? "保存中…" : "保存目标"}
             </Button>
           </div>
         </div>

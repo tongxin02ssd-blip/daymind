@@ -9,8 +9,10 @@ type Props = {
 export function GenerateReportButton({ disabled, loading, onClick }: Props) {
   return (
     <div className="report-actions">
-      <Button onClick={onClick} disabled={disabled || loading}>
-        {loading ? "生成中" : "生成今日状态报告"}
+      <Button className="generate-button" onClick={onClick} disabled={disabled || loading}>
+        {loading && <span className="button-spinner" aria-hidden="true" />}
+        {loading ? "正在生成洞察…" : "生成今日洞察"}
+        {!loading && <span className="button-arrow" aria-hidden="true">→</span>}
       </Button>
     </div>
   );

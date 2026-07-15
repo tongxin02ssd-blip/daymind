@@ -77,14 +77,22 @@ function buildPrompt(input: {
   return [
     {
       role: "system",
-      content:
-        "你是 DayMind 的状态报告生成器。只返回严格 JSON，不要 Markdown，不要解释。报告必须短、准、有判断力，直白但不能刺痛用户。不做聊天，不安慰，不说教，不编造用户没有提供的信息。明日建议只给 1 条，必须具体可执行。如果今日记录为空，只能基于计划完成情况克制判断，必须承认信息有限，不能擅自分析深层心理原因。"
+      content: [
+        "你是 DayMind 的今日洞察生成器。只返回严格 JSON，不要 Markdown，不要解释，也不要输出 schema 之外的字段。",
+        "洞察必须直白、客观、克制、有判断力，但不能刺痛用户；不聊天、不安慰、不说教，不使用心理诊断式表达，不编造或过度推测用户没有提供的信息。",
+        "conclusion、surfaceReason 和 deepReason 是同一段洞察正文依次衔接的三个部分，必须前后连贯，拼接后应像一段完整自然的个人洞察，而不是三个独立回答。",
+        "conclusion 用 1 至 2 句话概括今天的整体状态，约 30 至 60 字；surfaceReason 用 2 至 3 句话承接前文，说明今天实际发生的事情以及计划完成情况反映出的直接原因，约 60 至 120 字；deepReason 用 2 至 3 句话继续深入解释节奏、行动启动、注意力、任务阻力或近期状态变化，约 60 至 120 字。",
+        "三个字段拼接后的正文通常控制在 150 至 260 字，不要为了凑字数重复信息或写空话。字段之间要有自然过渡，每个字段都直接续写正文。",
+        "conclusion、surfaceReason 和 deepReason 的内容中禁止出现“核心结论”“原因分析”“表层原因”“底层原因”“表层”“深层”等标题、标签、编号或冒号式开头。",
+        "如果用户提供的信息较少，正文应相应缩短并明确承认信息有限，不能强行写满字数，也不能擅自分析深层心理原因。",
+        "明日建议只给 1 条，必须具体、克制且可执行。"
+      ].join("\n")
     },
     {
       role: "user",
       content: JSON.stringify(
         {
-          task: "生成今日状态报告",
+          task: "生成今日洞察",
           outputSchema: {
             stateType: "string",
             conclusion: "string",
@@ -95,9 +103,17 @@ function buildPrompt(input: {
           priority: [
             "今日计划和今日记录最高",
             "近期背景目标其次",
-            "最近 7 天状态报告再次",
+            "最近 7 天历史洞察再次",
             "最近 7 天原始记录作为辅助"
           ],
+          writingRequirements: {
+            continuity: "conclusion、surfaceReason、deepReason 按顺序拼接后必须是一段自然、完整、无重复的个人洞察",
+            conclusion: "1 至 2 句话，约 30 至 60 字，概括今天的整体状态",
+            surfaceReason: "2 至 3 句话，约 60 至 120 字，承接上文说明实际发生的事情和计划完成情况",
+            deepReason: "2 至 3 句话，约 60 至 120 字，在前文基础上解释节奏、行动启动、注意力、任务阻力或近期变化",
+            totalLength: "信息充分时合计约 150 至 260 字；信息较少时应缩短并承认信息有限",
+            prohibited: "不得包含小标题、字段名称、编号、重复信息、心理诊断或无依据推测"
+          },
           date: input.date,
           todayPlans: plans,
           todayRecord: input.entry.record,
