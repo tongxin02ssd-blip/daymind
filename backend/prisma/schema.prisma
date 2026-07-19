@@ -46,6 +46,7 @@ model DailyPlan {
   id        String     @id @default(cuid())
   entryId   String
   content   String
+  note      String     @default("")
   completed Boolean    @default(false)
   sortOrder Int        @default(0)
   createdAt DateTime   @default(now())

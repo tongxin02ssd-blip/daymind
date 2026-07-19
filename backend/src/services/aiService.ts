@@ -60,7 +60,8 @@ function buildPrompt(input: {
 }) {
   const plans = input.entry.plans.map((plan) => ({
     content: plan.content,
-    completed: plan.completed
+    completed: plan.completed,
+    note: plan.note
   }));
   const recent = input.recentEntries.map((item) => ({
     date: item.date,
@@ -80,6 +81,7 @@ function buildPrompt(input: {
       content: [
         "你是 DayMind 的今日洞察生成器。只返回严格 JSON，不要 Markdown，不要解释，也不要输出 schema 之外的字段。",
         "洞察必须直白、客观、克制、有判断力，但不能刺痛用户；不聊天、不安慰、不说教，不使用心理诊断式表达，不编造或过度推测用户没有提供的信息。",
+        "计划备注记录了实际进度、遇到的情况或未完成原因。判断计划执行情况时必须结合备注，不能只根据 completed 的布尔值下结论。",
         "conclusion、surfaceReason 和 deepReason 是同一段洞察正文依次衔接的三个部分，必须前后连贯，拼接后应像一段完整自然的个人洞察，而不是三个独立回答。",
         "conclusion 用 1 至 2 句话概括今天的整体状态，约 30 至 60 字；surfaceReason 用 2 至 3 句话承接前文，说明今天实际发生的事情以及计划完成情况反映出的直接原因，约 60 至 120 字；deepReason 用 2 至 3 句话继续深入解释节奏、行动启动、注意力、任务阻力或近期状态变化，约 60 至 120 字。",
         "三个字段拼接后的正文通常控制在 150 至 260 字，不要为了凑字数重复信息或写空话。字段之间要有自然过渡，每个字段都直接续写正文。",
@@ -101,7 +103,7 @@ function buildPrompt(input: {
             suggestion: "string"
           },
           priority: [
-            "今日计划和今日记录最高",
+            "今日计划、计划备注和今日记录最高",
             "近期背景目标其次",
             "最近 7 天历史洞察再次",
             "最近 7 天原始记录作为辅助"

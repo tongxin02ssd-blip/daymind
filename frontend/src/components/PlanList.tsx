@@ -9,7 +9,7 @@ type Props = {
   editable: boolean;
   canToggleComplete: boolean;
   onCreate: (content: string) => Promise<void>;
-  onUpdate: (planId: string, payload: { content?: string; completed?: boolean }) => Promise<void>;
+  onUpdate: (planId: string, payload: { content?: string; note?: string; completed?: boolean }) => Promise<void>;
   onDelete: (planId: string) => Promise<void>;
 };
 

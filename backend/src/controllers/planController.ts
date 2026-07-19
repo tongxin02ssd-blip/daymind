@@ -11,6 +11,7 @@ export const createPlan = asyncHandler<AuthRequest>(async (req, res: Response) =
 export const updatePlan = asyncHandler<AuthRequest>(async (req, res: Response) => {
   const daily = await planService.updatePlan(req.userId!, req.params.planId, {
     content: req.body.content,
+    note: req.body.note,
     completed: req.body.completed,
     sortOrder: req.body.sortOrder
   });

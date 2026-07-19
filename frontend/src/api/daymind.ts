@@ -1,5 +1,5 @@
 import { api } from "./client";
-import { DailyEntry, GenerateReportResponse, User, UserContext } from "../types";
+import { DailyEntry, GenerateReportResponse, HistoryDaySummary, User, UserContext } from "../types";
 
 export async function register(email: string, password: string) {
   const { data } = await api.post<{ token: string; user: User }>("/auth/register", {
@@ -49,7 +49,7 @@ export async function createPlan(date: string, content: string) {
 
 export async function updatePlan(
   planId: string,
-  payload: { content?: string; completed?: boolean; sortOrder?: number }
+  payload: { content?: string; note?: string; completed?: boolean; sortOrder?: number }
 ) {
   const { data } = await api.put<{ daily: DailyEntry }>(`/plans/${planId}`, payload);
   return data.daily;
@@ -70,4 +70,11 @@ export async function getHistory(start: string, end: string) {
     params: { start, end }
   });
   return data.history;
+}
+
+export async function getHistorySummary(start: string, end: string) {
+  const { data } = await api.get<{ days: HistoryDaySummary[] }>("/history/summary", {
+    params: { start, end }
+  });
+  return data.days;
 }

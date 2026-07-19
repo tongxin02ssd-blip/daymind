@@ -18,10 +18,18 @@ export type DailyPlan = {
   id: string;
   entryId: string;
   content: string;
+  note: string;
   completed: boolean;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type HistoryDaySummary = {
+  date: string;
+  hasContent: boolean;
+  hasReport: boolean;
+  planCount: number;
 };
 
 export type DailyReport = {

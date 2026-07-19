@@ -46,10 +46,11 @@ export async function createPlan(userId: string, date: string, content: string) 
 export async function updatePlan(
   userId: string,
   planId: string,
-  data: { content?: string; completed?: boolean; sortOrder?: number }
+  data: { content?: string; note?: string; completed?: boolean; sortOrder?: number }
 ) {
   const plan = await findOwnedPlan(userId, planId);
   const content = typeof data.content === "string" ? data.content.trim() : undefined;
+  const note = typeof data.note === "string" ? data.note.trim() : undefined;
   if (content !== undefined && !content) {
     const error = new Error("Plan content is required");
     (error as Error & { status?: number }).status = 400;
@@ -60,6 +61,7 @@ export async function updatePlan(
     where: { id: planId },
     data: {
       content,
+      note,
       completed: typeof data.completed === "boolean" ? data.completed : undefined,
       sortOrder: typeof data.sortOrder === "number" ? data.sortOrder : undefined
     }
